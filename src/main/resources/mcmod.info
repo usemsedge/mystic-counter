@@ -1,0 +1,16 @@
+[
+{
+  "modid": "MysticDropCounter",
+  "name": "Mystic Drop Counter",
+  "description": "Mod for tracking mystic drops in The Hypixel Pit",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["usemsedge"],
+  "credits": "usemsedge",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
