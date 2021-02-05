@@ -26,22 +26,7 @@ public class MysticDropEventHandler {
     private FontRenderer renderer = Minecraft.getMinecraft().fontRendererObj;
     private boolean tempSuspend = false;
     private int tick = 0;
-    private String LOG_PATH = "mysticdropcounter.log";
 
-
-    private void saveLogInfo(String log) {
-        new Thread(() -> {
-            File mystic_file = new File(LOG_PATH);
-            try {
-                FileWriter fw = new FileWriter(mystic_file, true);
-                fw.write(log);
-                fw.close();
-            }
-
-         catch(IOException e){
-            e.printStackTrace();
-        }}).start();
-    }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onChatMessageRecieved(ClientChatReceivedEvent e) {
@@ -59,7 +44,6 @@ public class MysticDropEventHandler {
 
         }
 
-        saveLogInfo(d + " " + e);
 
 
     }
@@ -69,11 +53,11 @@ public class MysticDropEventHandler {
         if (e.phase == TickEvent.Phase.START) {
             tick++;
             if (tick > 9 && Minecraft.getMinecraft() != null
-                && Minecraft.getMinecraft().thePlayer != null) {
+                    && Minecraft.getMinecraft().thePlayer != null) {
                 if (Minecraft.getMinecraft().getCurrentServerData() != null
-                    && Minecraft.getMinecraft().getCurrentServerData().serverIP != null
-                    && Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1)
-                    != null) {
+                        && Minecraft.getMinecraft().getCurrentServerData().serverIP != null
+                        && Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1)
+                        != null) {
                     MysticDropCounter.isInPit = (stripString(StringUtils.stripControlCodes(
                             Minecraft.getMinecraft().theWorld.getScoreboard().getObjectiveInDisplaySlot(1)
                                     .getDisplayName())).contains("THE HYPIXEL PIT") && Minecraft.getMinecraft()
@@ -91,7 +75,7 @@ public class MysticDropEventHandler {
         new ScheduledThreadPoolExecutor(1).schedule(() -> {
             Minecraft.getMinecraft().thePlayer
                     .addChatMessage(new ChatComponentText(EnumChatFormatting.RED +
-                    "Downloads not from github.com/usemsedge/mystic-counter are RATs."));
+                            "Downloads not from github.com/usemsedge/mystic-counter are RATs.\n" + EnumChatFormatting.GREEN + "Type /myst to get a list of commands."));
         }, 3, TimeUnit.SECONDS);
     }
 
@@ -136,7 +120,7 @@ public class MysticDropEventHandler {
             String killsPerMystic =
                     "Kills/Mystic: " + ((MysticDropCounter.mysticDrops == 0) ? MysticDropCounter.mysticDrops
                             : new DecimalFormat("#.##")
-                    .format(MysticDropCounter.killCount / (MysticDropCounter.mysticDrops * 1.0d)));
+                            .format(MysticDropCounter.killCount / (MysticDropCounter.mysticDrops * 1.0d)));
             String kills = "Kills: " + (int)MysticDropCounter.killCount;
             String mystics = "Mystic Drops: " + (int)MysticDropCounter.mysticDrops;
             String lastMystic = "Kills since last Mystic Drop: " + (int)MysticDropCounter.sinceLastMysticDrop;
@@ -161,15 +145,15 @@ public class MysticDropEventHandler {
                         MysticDropCounter.guiLocation[1] + renderer.FONT_HEIGHT * 3, MysticDropCounter.color, true);
             }
             else {
-                    renderer.drawString(mystics, MysticDropCounter.guiLocation[0],
-                            MysticDropCounter.guiLocation[1], MysticDropCounter.color, true);
-                    renderer.drawString(kills, MysticDropCounter.guiLocation[0],
-                            MysticDropCounter.guiLocation[1] + renderer.FONT_HEIGHT, MysticDropCounter.color, true);
-                    renderer.drawString(killsPerMystic, MysticDropCounter.guiLocation[0],
-                            MysticDropCounter.guiLocation[1] + renderer.FONT_HEIGHT * 2, MysticDropCounter.color, true);
-                    renderer.drawString(lastMystic, MysticDropCounter.guiLocation[0],
-                            MysticDropCounter.guiLocation[1] + renderer.FONT_HEIGHT * 3, MysticDropCounter.color, true);
-                 }
+                renderer.drawString(mystics, MysticDropCounter.guiLocation[0],
+                        MysticDropCounter.guiLocation[1], MysticDropCounter.color, true);
+                renderer.drawString(kills, MysticDropCounter.guiLocation[0],
+                        MysticDropCounter.guiLocation[1] + renderer.FONT_HEIGHT, MysticDropCounter.color, true);
+                renderer.drawString(killsPerMystic, MysticDropCounter.guiLocation[0],
+                        MysticDropCounter.guiLocation[1] + renderer.FONT_HEIGHT * 2, MysticDropCounter.color, true);
+                renderer.drawString(lastMystic, MysticDropCounter.guiLocation[0],
+                        MysticDropCounter.guiLocation[1] + renderer.FONT_HEIGHT * 3, MysticDropCounter.color, true);
+            }
         }
     }
 

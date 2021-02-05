@@ -12,13 +12,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -42,6 +46,23 @@ public class MysticDropCounter {
     static boolean isInPit = false;
     static int[] guiLocation = new int[]{2, 2};
     private static ScheduledExecutorService autoSaveExecutor;
+
+    private String LOG_PATH = "mysticdropcounter.log";
+
+
+    private void saveLogInfo(String log) {
+        new Thread(() -> {
+            File mystic_file = new File(LOG_PATH);
+            try {
+                FileWriter fw = new FileWriter(mystic_file, true);
+                fw.write(log);
+                fw.close();
+            }
+
+            catch(IOException e){
+                e.printStackTrace();
+            }}).start();
+    }
 
     static void scheduleFileSave(boolean toggle, int delay) {
         if (autoSaveExecutor != null && !autoSaveExecutor.isShutdown()) {
@@ -128,8 +149,13 @@ public class MysticDropCounter {
         return lines;
     }
 
+    public void chat(EntityPlayer player, String message) {
+        player.addChatMessage(new ChatComponentText(message));
+    }
+
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+
         ClientCommandHandler.instance.registerCommand(new MysticDropCounterCommand());
         MinecraftForge.EVENT_BUS.register(new io.github.usemsedge.MysticDropEventHandler());
         if (new File(MYSTIC_DROP_PATH).isFile()) {
@@ -143,16 +169,21 @@ public class MysticDropCounter {
                     guiLocation = new int[]{Integer.parseInt(input[3]), Integer.parseInt(input[4])};
                     color = Integer.parseInt(input[5], 16);
                     align = input[6];
+
+                    saveLogInfo("data file loading actually works\n");
                 }
                 else {
                     saveMysticInfo(0, 0, 0);
+                    saveLogInfo("input data file is wrong\n");
                 }
             }
             catch (IOException e) {
                 e.printStackTrace();
+                saveLogInfo("opening data file failed\n");
             }
         }
         else {
+            saveLogInfo("no data file exists\n");
             saveMysticInfo(0, 0, 0);
         }
         scheduleFileSave(true, 120);
