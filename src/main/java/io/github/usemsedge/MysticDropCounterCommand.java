@@ -3,7 +3,6 @@ package io.github.usemsedge;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.HashMap;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -95,9 +94,19 @@ public class MysticDropCounterCommand extends CommandBase {
                 }
             }
 
+            else if(args.length == 2 && args[0].equalsIgnoreCase("l"))
+            {
+                MysticDropCounter.autoL ^= true;
+                chat(player, EnumChatFormatting.GREEN +
+                        "Auto L has been toggled " +
+                        EnumChatFormatting.DARK_GREEN +
+                        (MysticDropCounter.autoL ? "on": "off"));
+            }
+
             else {
                 chat(player, EnumChatFormatting.BLACK + "___________________________");
 
+                chat(player, EnumChatFormatting.LIGHT_PURPLE + "Mystic Drop Counter tracks how many kills and mystic drops you get.");
                 chat(player, EnumChatFormatting.LIGHT_PURPLE + "/mysticcounter [subcommand] [arguments]");
                 chat(player, EnumChatFormatting.LIGHT_PURPLE + "/myst [subcommand] [arguments]");
                 chat(player, EnumChatFormatting.LIGHT_PURPLE + "1. /myst toggle");
@@ -105,6 +114,7 @@ public class MysticDropCounterCommand extends CommandBase {
                 chat(player, EnumChatFormatting.LIGHT_PURPLE + "3. /myst count");
                 chat(player, EnumChatFormatting.LIGHT_PURPLE + "4. /myst color (color)");
                 chat(player, EnumChatFormatting.LIGHT_PURPLE + "5. /myst pos (x) (y)");
+                chat(player, EnumChatFormatting.LIGHT_PURPLE + "6. /myst L toggle");
 
 
 

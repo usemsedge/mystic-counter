@@ -10,7 +10,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StringUtils;
@@ -27,23 +26,29 @@ public class MysticDropEventHandler {
     private boolean tempSuspend = false;
     private int tick = 0;
 
-
-
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
         String msg = e.message.getUnformattedText();
         long d = System.currentTimeMillis();
 
-        if (msg.contains("MYSTIC ITEM!") && !msg.contains(":")) {
-            MysticDropCounter.mysticDrops++;
-            MysticDropCounter.sinceLastMysticDrop = 0;
+        if (MysticDropCounter.autoL) {
+            if (msg.contains("A player has been removed") && !msg.contains(":") && msg.contains("!")) {
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("L"));
+            }
         }
 
-        else if (msg.contains("KILL!") && msg.contains("[") && msg.contains("]") && !msg.contains(":")) {
 
-            MysticDropCounter.killCount += 1;
-            MysticDropCounter.sinceLastMysticDrop += 1;
+        if (MysticDropCounter.isInPit) {
+            //even when display is turned off it counts in the background
+            if (msg.contains("MYSTIC ITEM!") && msg.contains("dropped") && !msg.contains(":")) {
+                MysticDropCounter.mysticDrops++;
+                MysticDropCounter.sinceLastMysticDrop = 0;
 
+            } else if (msg.contains("KILL!") && msg.contains("[") && msg.contains("]") && !msg.contains(":")) {
+                MysticDropCounter.killCount += 1;
+                MysticDropCounter.sinceLastMysticDrop += 1;
+
+            }
         }
         MysticDropCounter.saveLogInfo(d + " received chat message " + msg + "\n");
     }
@@ -75,7 +80,7 @@ public class MysticDropEventHandler {
         new ScheduledThreadPoolExecutor(1).schedule(() -> {
             Minecraft.getMinecraft().thePlayer
                     .addChatMessage(new ChatComponentText(EnumChatFormatting.RED +
-                            "Downloads not from github.com/usemsedge/mystic-counter are RATs.\n" + EnumChatFormatting.GREEN + "Type /myst to get a list of commands."));
+                            "Downloads not from github.com/usemsedge/mystic-counter are likely hacked.\n" + EnumChatFormatting.GREEN + "Type /myst to get a list of commands."));
         }, 3, TimeUnit.SECONDS);
     }
 
@@ -121,9 +126,9 @@ public class MysticDropEventHandler {
                     "Kills/Mystic: " + ((MysticDropCounter.mysticDrops == 0) ? MysticDropCounter.mysticDrops
                             : new DecimalFormat("#.##")
                             .format(MysticDropCounter.killCount / (MysticDropCounter.mysticDrops * 1.0d)));
-            String kills = "Kills: " + (int)MysticDropCounter.killCount;
-            String mystics = "Mystic Drops: " + (int)MysticDropCounter.mysticDrops;
-            String lastMystic = "Kills since last Mystic Drop: " + (int)MysticDropCounter.sinceLastMysticDrop;
+            String kills = "Kills: " + MysticDropCounter.killCount;
+            String mystics = "Mystic Drops: " + MysticDropCounter.mysticDrops;
+            String lastMystic = "Kills since last Mystic Drop: " + MysticDropCounter.sinceLastMysticDrop;
             String longest = lastMystic;
             //lastMystic is the longest string, because you are not getting a 20 digit number of kills
             if (MysticDropCounter.align.equals("right")) {
