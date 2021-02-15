@@ -33,7 +33,7 @@ public class MysticDropEventHandler {
 
         if (MysticDropCounter.autoL) {
             if (msg.contains("A player has been removed") && !msg.contains(":") && msg.contains("!")) {
-                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("L"));
+                Minecraft.getMinecraft().thePlayer.sendChatMessage("L");
             }
         }
 

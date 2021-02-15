@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 @Mod(modid = MysticDropCounter.MODID, version = MysticDropCounter.VERSION)
 public class MysticDropCounter {
     static final String MODID = "MysticDropCounter";
-    static final String VERSION = "1.1.1";
+    static final String VERSION = "1.1.2";
     private static final String MYSTIC_DROP_PATH = "mysticdropcounter.dat";
     static boolean loggedIn = false;
     static boolean usingLabyMod = false;
