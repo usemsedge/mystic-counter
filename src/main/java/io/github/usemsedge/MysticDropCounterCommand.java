@@ -3,6 +3,7 @@ package io.github.usemsedge;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.HashMap;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,24 +48,51 @@ public class MysticDropCounterCommand extends CommandBase {
 
             }
             else if (args.length == 2 && args[0].equalsIgnoreCase("align")) {
-                MysticDropCounter.align = (args[1].equalsIgnoreCase("right")) ? "right": "left";
+                if (args[1].equalsIgnoreCase("right") || args[1].equalsIgnoreCase("left")) {
+                    MysticDropCounter.align = (args[1].equalsIgnoreCase("right")) ? "right": "left";
+                }
+                else {
+                    chat(player, EnumChatFormatting.LIGHT_PURPLE + "Aligns the text of the mystic drop window to the right or left");
+                    chat(player, EnumChatFormatting.LIGHT_PURPLE + "Correct usage: /myst align (right|left)");
+                }
+
             }
-            else if (args.length == 1 && args[0].equalsIgnoreCase("tips")) {
-                chat(player, EnumChatFormatting.DARK_GREEN + "PIT TIPS FOR NONS (not unranked players, think skyblock terminology)");
-                chat(player, EnumChatFormatting.GREEN + "To get an axe: You must be Prestige 2 and buy the Barbarian renown upgrade, then buy it in the perk shop");
-                chat(player, EnumChatFormatting.GREEN + "Perks you should unlock in order: G-Head, Strength Chain, Vampire (replace G-Head), Gladiator OR Streaker");
-                chat(player, EnumChatFormatting.GREEN + "Fresh: red, green, yellow, blue, orange fresh pants, worth about 15k");
-                chat(player, EnumChatFormatting.GREEN + "Golden (enchanted) swords: mystic swords, can be enchanted to T1 and T2 when you have the Level 1 Mysticism upgrade, and can be T3 when you have the Level 9 Mysticism Upgrade ");
-                chat(player, EnumChatFormatting.GREEN + "The Pit is a PVP game and expect to be killed.");
-                chat(player, EnumChatFormatting.GREEN + "The Pit has a rabbit infestation that you can't do anything about.");
-                chat(player, EnumChatFormatting.GREEN + "If you think diamond armor is unfair, buy diamond armor yourself.");
-                chat(player, EnumChatFormatting.GREEN + "Permanent diamond armor is either an Archangel Chestplate or someone unlocking Autobuy.");
-                chat(player, EnumChatFormatting.GREEN + "Before downloading a Pit Mod, be sure to make sure it does not contain any RATs");
-            }
+
             else if (args.length == 1 && args[0].equalsIgnoreCase("count")) {
-                chat(player, "Mystic Drops: " + (int)MysticDropCounter.mysticDrops);
-                chat(player, "Kills: " + (int)MysticDropCounter.killCount);
-                chat(player, "Since Last Drop: " + (int)MysticDropCounter.sinceLastMysticDrop);
+                chat(player, "Mystic Drops: " + MysticDropCounter.mysticDrops);
+                chat(player, "Kills: " + MysticDropCounter.killCount);
+                chat(player, "Since Last Drop: " + MysticDropCounter.sinceLastMysticDrop);
+            }
+
+            else if (args.length == 2 && args[0].equalsIgnoreCase("color")) {
+                char[] c = args[1].toCharArray();
+
+                //last six chars of the input string
+                // #ffffff will give "ffffff", so will 0xffffff
+                char[] x = Arrays.copyOfRange(c, c.length - 6, c.length);
+                String number = String.copyValueOf(x);
+
+                if (!MysticDropCounter.isInteger(number, 16)) {
+                    chat(player, EnumChatFormatting.LIGHT_PURPLE + "Changes the color of the display");
+                    chat(player, EnumChatFormatting.LIGHT_PURPLE + "Correct usage: /myst color (color)");
+                    chat(player, EnumChatFormatting.LIGHT_PURPLE + "(color) should be substituted for a 6-character hex value like 00ffff");
+                    return;
+                }
+                MysticDropCounter.color = Integer.decode("0x" + number);
+            }
+
+            else if (args.length == 3 && args[0].equalsIgnoreCase("pos")) {
+
+                if (MysticDropCounter.isInteger(args[1]) &&
+                    MysticDropCounter.isInteger(args[2])) {
+
+                    MysticDropCounter.guiLocation[0] = Integer.parseInt(args[1]);
+                    MysticDropCounter.guiLocation[1] = Integer.parseInt(args[2]);
+                }
+                else {
+                    chat(player, EnumChatFormatting.LIGHT_PURPLE + "Changes the location of the display");
+                    chat(player, EnumChatFormatting.LIGHT_PURPLE + "Correct usage: /myst pos (x) (y)");
+                }
             }
 
             else {
@@ -72,10 +100,11 @@ public class MysticDropCounterCommand extends CommandBase {
 
                 chat(player, EnumChatFormatting.LIGHT_PURPLE + "/mysticcounter [subcommand] [arguments]");
                 chat(player, EnumChatFormatting.LIGHT_PURPLE + "/myst [subcommand] [arguments]");
-                chat(player, EnumChatFormatting.LIGHT_PURPLE + "1. toggle");
-                chat(player, EnumChatFormatting.LIGHT_PURPLE + "2. align (right|left)");
-                chat(player, EnumChatFormatting.LIGHT_PURPLE + "3. tips");
-                chat(player, EnumChatFormatting.LIGHT_PURPLE + "4. count");
+                chat(player, EnumChatFormatting.LIGHT_PURPLE + "1. /myst toggle");
+                chat(player, EnumChatFormatting.LIGHT_PURPLE + "2. /myst align (right|left)");
+                chat(player, EnumChatFormatting.LIGHT_PURPLE + "3. /myst count");
+                chat(player, EnumChatFormatting.LIGHT_PURPLE + "4. /myst color (color)");
+                chat(player, EnumChatFormatting.LIGHT_PURPLE + "5. /myst pos (x) (y)");
 
 
 

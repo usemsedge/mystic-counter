@@ -40,17 +40,17 @@ public class MysticDropCounter {
     static boolean toggled = true;
     static int color = 0x55FFFF;
     static String align = "left";
-    static float killCount = 0;
-    static float mysticDrops = 0;
-    static float sinceLastMysticDrop = 0;
+    static int killCount = 0;
+    static int mysticDrops = 0;
+    static int sinceLastMysticDrop = 0;
     static boolean isInPit = false;
     static int[] guiLocation = new int[]{2, 2};
     private static ScheduledExecutorService autoSaveExecutor;
 
-    private String LOG_PATH = "mysticdropcounter.log";
+    static String LOG_PATH = "mysticdropcounter.log";
 
 
-    private void saveLogInfo(String log) {
+    static void saveLogInfo(String log) {
         new Thread(() -> {
             File mystic_file = new File(LOG_PATH);
             try {
@@ -78,12 +78,12 @@ public class MysticDropCounter {
         }
     }
 
-    static void saveMysticInfo(float kills, float drops, float last) {
+    static void saveMysticInfo(int kills, int drops, int last) {
         new Thread(() -> {
             File mystic_file = new File(MYSTIC_DROP_PATH);
             try {
                 FileWriter fw = new FileWriter(mystic_file, false);
-                fw.write((int)kills + "," + (int)drops + "," + (int)last + "," + guiLocation[0]
+                fw.write(kills + "," + drops + "," + last + "," + guiLocation[0]
                         + "," + guiLocation[1] + "," + Integer.toHexString(color) + "," + align);
                 fw.close();
             }

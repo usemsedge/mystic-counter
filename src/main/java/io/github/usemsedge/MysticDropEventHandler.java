@@ -28,8 +28,9 @@ public class MysticDropEventHandler {
     private int tick = 0;
 
 
+
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onChatMessageRecieved(ClientChatReceivedEvent e) {
+    public void onChatMessageReceived(ClientChatReceivedEvent e) {
         String msg = e.message.getUnformattedText();
         long d = System.currentTimeMillis();
 
@@ -38,14 +39,13 @@ public class MysticDropEventHandler {
             MysticDropCounter.sinceLastMysticDrop = 0;
         }
 
-        else if (msg.contains("KILL!") && !msg.contains(":")) {
-            MysticDropCounter.killCount += 0.5;
-            MysticDropCounter.sinceLastMysticDrop += 0.5;
+        else if (msg.contains("KILL!") && msg.contains("[") && msg.contains("]") && !msg.contains(":")) {
+
+            MysticDropCounter.killCount += 1;
+            MysticDropCounter.sinceLastMysticDrop += 1;
 
         }
-
-
-
+        MysticDropCounter.saveLogInfo(d + " received chat message " + msg + "\n");
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
